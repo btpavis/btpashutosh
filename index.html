@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ashutosh Vishwakarma - Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+        :root {
+            --primary-color: #4f46e5; /* Indigo */
+            --secondary-color: #007bff; /* A nice blue for accents */
+            --background-color: #f0f2f5; /* Lighter, subtle background */
+            --card-bg-color: #ffffff;
+            --text-color-dark: #212529; /* Darker text for readability */
+            --text-color-light: #6c757d; /* Muted text for secondary info */
+            --border-color: #dee2e6; /* Softer border */
+            --hover-shadow: rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color-dark);
+            line-height: 1.6;
+            scroll-behavior: smooth; /* Ensure smooth scroll works universally */
+        }
+
+        .container {
+            max-width: 1024px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* Nav Bar */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly more opaque for better contrast */
+            backdrop-filter: blur(12px); /* Slightly stronger blur */
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-logo {
+            font-weight: 900;
+            font-size: 1.6rem; /* Slightly larger logo */
+            letter-spacing: -0.05em;
+            text-decoration: none;
+            color: var(--primary-color); /* Logo in primary color */
+            transition: color 0.3s ease;
+        }
+        .navbar-logo:hover {
+            color: var(--secondary-color);
+        }
+
+        .navbar-links {
+            display: none;
+            gap: 1.8rem; /* Increased gap for better spacing */
+        }
+
+        .navbar-links a {
+            color: var(--text-color-dark);
+            font-weight: 600; /* Slightly bolder links */
+            text-decoration: none;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .navbar-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px; /* Thicker underline */
+            bottom: -8px; /* Lowered underline */
+            left: 0;
+            background-color: var(--secondary-color); /* Secondary color for underline */
+            transition: width 0.3s ease-in-out;
+        }
+
+        .navbar-links a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-icon {
+            display: block;
+            cursor: pointer;
+            font-size: 1.7rem; /* Larger icon */
+            color: var(--primary-color);
+        }
+
+        @media (min-width: 768px) {
+            .navbar-links {
+                display: flex;
+            }
+
+            .mobile-menu-icon {
+                display: none;
+            }
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: var(--card-bg-color);
+            border-top: 1px solid var(--border-color);
+            padding: 1rem 0;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05); /* Added shadow for dropdown */
+        }
+        .dropdown-menu a {
+            padding: 0.75rem 0;
+            width: 80%;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-color-dark);
+            font-weight: 500;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .dropdown-menu a:hover {
+            background-color: var(--background-color);
+            color: var(--primary-color);
+        }
+
+        .dropdown-menu.active {
+            display: flex;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            padding: 100px 0; /* More vertical padding */
+            text-align: center;
+            background-image: linear-gradient(135deg, var(--background-color) 0%, #e0e7fa 100%); /* Gradient background */
+            animation: fadeIn 1s ease-in-out;
+            border-radius: 1rem; /* Rounded corners for the section */
+            margin-top: 2rem;
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem; /* Even larger heading */
+            font-weight: 900;
+            line-height: 1.2;
+            letter-spacing: -0.06em;
+            color: var(--primary-color);
+            margin-bottom: 1.2rem;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1); /* Subtle text shadow */
+        }
+
+        .hero-section p {
+            font-size: 1.35rem; /* Slightly larger paragraph */
+            color: var(--text-color-dark);
+            max-width: 800px;
+            margin: 0 auto 2.5rem; /* More margin below paragraph */
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.2rem; /* Increased gap between buttons */
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.85rem 1.8rem; /* Larger padding for buttons */
+            border-radius: 9999px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px); /* Slightly more lift */
+            box-shadow: 0 6px 15px var(--hover-shadow);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: 1px solid var(--primary-color);
+        }
+        .btn-primary:hover {
+            background-color: #3b33bd; /* Darker shade on hover */
+            border-color: #3b33bd;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary-color); /* Secondary button text in primary color */
+            border: 2px solid var(--primary-color); /* Thicker border in primary color */
+        }
+        .btn-secondary:hover {
+            background-color: var(--primary-color); /* Fill with primary color on hover */
+            color: white;
+        }
+        
+        /* Sections */
+        .section {
+            padding: 5rem 0; /* More padding for sections */
+            scroll-margin-top: 100px;
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 2.5rem; /* More margin below heading */
+            font-size: 2.2rem; /* Larger heading font */
+            font-weight: 800; /* Bolder heading */
+            letter-spacing: -0.03em;
+            color: var(--primary-color);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.9rem; /* Increased gap for icon */
+        }
+        .section-heading i {
+            color: var(--secondary-color); /* Icon in secondary color */
+        }
+
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -15px; /* Lowered underline */
+            transform: translateX(-50%);
+            width: 70px; /* Longer underline */
+            height: 4px; /* Thicker underline */
+            background-color: var(--secondary-color); /* Secondary color for underline */
+            border-radius: 2px;
+        }
+
+        .card {
+            background-color: var(--card-bg-color);
+            border-radius: 1rem;
+            padding: 2.5rem; /* More padding in cards */
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); /* More prominent shadow */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 2rem; /* More margin between cards */
+            border-left: 5px solid var(--primary-color); /* A subtle colored border on the left */
+        }
+
+        .card:hover {
+            transform: translateY(-8px); /* More significant lift */
+            box-shadow: 0 12px 25px var(--hover-shadow);
+        }
+
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .job-details, .education-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .job-details h3, .education-details h3 {
+            margin: 0 0 0.6rem;
+            font-size: 1.35rem; /* Larger job/education titles */
+            font-weight: 700;
+            color: var(--text-color-dark);
+        }
+
+        .job-details p, .education-details p {
+            margin: 0;
+            color: var(--text-color-light);
+            font-size: 0.95rem; /* Slightly larger text */
+        }
+
+        .job-period, .education-period {
+            font-style: italic;
+            color: var(--text-color-light);
+            font-size: 0.85rem; /* Slightly larger period text */
+            margin-top: 0.6rem;
+        }
+
+        .job-bullets, .about-bullets, .cert-list {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 1.2rem; /* More margin above lists */
+            font-size: 1rem;
+            line-height: 1.7; /* Increased line height for readability */
+        }
+
+        .job-bullets li, .about-bullets li, .cert-list li {
+            position: relative;
+            padding-left: 2rem; /* More padding for bullet */
+            margin-bottom: 0.7rem;
+            color: var(--text-color-dark);
+        }
+
+        .job-bullets li::before, .about-bullets li::before, .cert-list li::before {
+            content: '\2022'; /* Unicode bullet character */
+            color: var(--secondary-color); /* Bullet in secondary color */
+            font-size: 1.2em; /* Larger bullet */
+            position: absolute;
+            left: 0;
+            top: 0;
+            line-height: inherit;
+        }
+
+        @media (min-width: 768px) {
+            .job-details {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .job-period {
+                margin-top: 0;
+            }
+        }
+        
+        /* Pills & Lists */
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem; /* Increased gap */
+            justify-content: center;
+        }
+
+        .pill {
+            background-color: #e9ecef; /* Lighter background for pills */
+            border-radius: 9999px;
+            padding: 0.6rem 1.2rem; /* Larger pills */
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-color-dark);
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .pill:hover {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Contact card specific styling */
+        .contact-card p {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.1rem;
+            color: var(--text-color-dark);
+        }
+        .contact-card p i {
+            color: var(--secondary-color); /* Icons in secondary color */
+            font-size: 1.2em;
+        }
+        .contact-card a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .contact-card a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2.5rem 0; /* More padding */
+            font-size: 0.9rem;
+            color: var(--text-color-light);
+            border-top: 1px solid var(--border-color);
+            margin-top: 5rem; /* More margin above footer */
+            background-color: var(--card-bg-color); /* Footer background */
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        [data-animate] {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        [data-animate="true"] {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .location-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: var(--text-color-light);
+            font-size: 0.95rem;
+            margin-top: 1rem;
+        }
+        .location-text i {
+            color: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="#home" class="navbar-logo">Ashutosh Vishwakarma</a>
+            <div class="navbar-links">
+                <a href="#about">About</a>
+                <a href="#skills">Skills</a>
+                <a href="#experience">Experience</a>
+                <a href="#education">Education</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <i class="fas fa-bars mobile-menu-icon" id="mobile-menu-btn"></i>
+        </div>
+        <div class="dropdown-menu" id="dropdown-menu">
+            <a href="#about">About</a>
+            <a href="#skills">Skills</a>
+            <a href="#experience">Experience</a>
+            <a href="#education">Education</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+    
+    <main class="container">
+        <section class="hero-section" id="home">
+            <div data-animate>
+                <h1>Senior SAP Integration Consultant</h1>
+                <p>8+ years in architecting and delivering SAP integrations across CPI/PI/PO, with end‑to‑end experience in design, development, testing and migrations for Utilities, Telecom, BFSI, Retail and more. Strong at complex mappings (Groovy/JS), hybrid connectivity (Cloud Connector), and multi‑cloud integrations (SuccessFactors, S/4HANA, Salesforce, Coupa, Azure Blob).</p>
+                <div class="hero-buttons">
+                    <a href="https://www.linkedin.com/in/ashutosh-vishwakarma-177a17136/" target="_blank" class="btn btn-secondary">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                    <a href="#contact" class="btn btn-primary">
+                        <i class="far fa-envelope"></i> Hire Me
+                    </a>
+                </div>
+                <div class="location-text">
+                    <i class="fas fa-map-marker-alt"></i> Thane, Maharashtra, India
+                </div>
+            </div>
+        </section>
+
+        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 4rem 0;">
+
+        <section class="section" id="about">
+            <h2 class="section-heading" data-animate>
+                <i class="fas fa-info-circle"></i> About Me
+            </h2>
+            <div data-animate>
+                <ul class="about-bullets">
+                    <li>Extensive experience with 4 full life cycle implementation and 3 support/rollout/migration projects with analysis to meet business requirements, Project Coordination, Client Interaction, design, development, Testing, Troubleshooting.</li>
+                    <li>Specialist in building resilient, scalable, and secure integrations across SAP and non‑SAP landscapes.</li>
+                    <li>Experienced in integrations with SuccessFactors, S/4HANA, Salesforce, Coupa, Azure and Ariba.</li>
+                    <li>Strong focus on simplifying complex mapping logic and enabling clean error‑handling.</li>
+                    <li>Knowledge in SAP API Management.</li>
+                    <li>Implemented EDI-based B2B integrations (830 Planning Schedule, 856 ASN, 862 Delivery Schedule) for automotive and manufacturing clients.</li>
+                    <li>Upgrade project from SAP PI 7.1/7.31 Dual Stack to SAP PO 7.5 single stack.</li>
+                    <li>Conducted SuccessFactors integration using CPI in-house training for freshers.</li>
+                </ul>
+            </div>
+        </section>
+        
+        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 4rem 0;">
+
+        <section class="section" id="skills">
+            <h2 class="section-heading" data-animate>
+                <i class="fas fa-tools"></i> Core Skills
+            </h2>
+            <div class="skills-grid" data-animate>
+                <span class="pill">SAP CPI/PI/PO</span>
+                <span class="pill">SAP Integration Suite</span>
+                <span class="pill">SuccessFactors EC</span>
+                <span class="pill">S/4HANA / ERP</span>
+                <span class="pill">Salesforce (APIs/OAuth)</span>
+                <span class="pill">Coupa (REST)</span>
+                <span class="pill">Azure Blob (Storage Adapter)</span>
+                <span class="pill">Event Mesh (AMQP)</span>
+                <span class="pill">OData/SOAP/REST</span>
+                <span class="pill">IDoc/RFC/Proxy</span>
+                <span class="pill">PGP Encryption</span>
+                <span class="pill">Groovy/JavaScript</span>
+                <span class="pill">CTS/CTS+</span>
+                <span class="pill">SLD</span>
+                <span class="pill">UDF/Lookups</span>
+                <span class="pill">ABAP Proxies</span>
+                <span class="pill">Monitoring & Error Handling</span>
+                <span class="pill">Unit/Integration Testing</span>
+            </div>
+        </section>
+
+        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 4rem 0;">
+
+        <section class="section" id="experience">
+            <h2 class="section-heading" data-animate>
+                <i class="fas fa-briefcase"></i> Experience
+            </h2>
+            <div data-animate>
+                <div class="card">
+                    <div class="job-details">
+                        <div>
+                            <h3>Senior Associate · PwC</h3>
+                            <p>Mumbai, India</p>
+                        </div>
+                        <p class="job-period">Aug 2024 – Present</p>
+                    </div>
+                    <ul class="job-bullets">
+                        <li>Built Coupa integrations using REST APIs & Coupa Adapter.</li>
+                        <li>Established Azure Blob connectivity and developed interfaces via Azure Storage Adapter.</li>
+                        <li>Coordinated with functional teams & clients to deliver under tight deadlines.</li>
+                        <li>Mentored teammates and unblocked dependencies while shipping own work.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="job-details">
+                        <div>
+                            <h3>Application Development Team Lead · Accenture</h3>
+                            <p>Mumbai, India</p>
+                        </div>
+                        <p class="job-period">Jan 2021 – Aug 2024</p>
+                    </div>
+                    <ul class="job-bullets">
+                        <li>Delivered Active Directory integrations sourcing employee events from SuccessFactors EC.</li>
+                        <li>Built custom payroll integrations to third‑party providers.</li>
+                        <li>Implemented EC → BenefitFocus demographics file integration.</li>
+                        <li>Used SF OData/APIs to craft custom CPI integrations & error handling/reporting (ServiceNow).</li>
+                        <li>Connected Oracle DB via Cloud Connector; implemented PGP encryption.</li>
+                        <li>Owned design, development, configuration, deployment & documentation across interfaces.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="job-details">
+                        <div>
+                            <h3>SAP PI/PO Consultant · Indo Schottle Auto Parts Pvt. Ltd.</h3>
+                            <p>Pune, India</p>
+                        </div>
+                        <p class="job-period">Feb 2020 – Dec 2020</p>
+                    </div>
+                    <ul class="job-bullets">
+                        <li>Migrated from PI 7.1 → PO 7.5 single stack using migration tool (incl. B2B/A2A scenarios).</li>
+                        <li>Supported ~2000 interfaces, resolved P1/P2 incidents, coordinated cross‑team fixes.</li>
+                        <li>Handled EDI conversions previously run via Flex Converter in PI 7.11.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="job-details">
+                        <div>
+                            <h3>Sr. Software Analyst · Capgemini</h3>
+                            <p>Mumbai, India</p>
+                        </div>
+                        <p class="job-period">May 2017 – Feb 2020</p>
+                    </div>
+                    <ul class="job-bullets">
+                        <li>Developed IFlows/ICOs, graphical & Java mappings; performed unit testing & transports (CTS+).</li>
+                        <li>Monitored PI/PO & ECC systems; monthly maintenance & sanity checks.</li>
+                        <li>Migrated 573 interfaces; created SLD objects & alerts; cross‑module migration training.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 4rem 0;">
+
+        <section class="section" id="education">
+            <h2 class="section-heading" data-animate>
+                <i class="fas fa-graduation-cap"></i> Education
+            </h2>
+            <div data-animate>
+                <div class="card education-details">
+                    <h3>K J Somaiya College of Science and Commerce</h3>
+                    <p>BSc, Computer Science</p>
+                    <p class="education-period">Apr 2017</p>
+                </div>
+                <div class="card education-details">
+                    <h3>I.D.U.B.S Junior College</h3>
+                    <p>Higher Secondary Certificate</p>
+                    <p class="education-period">Mar 2014</p>
+                </div>
+                <div class="card education-details">
+                    <h3>I.D.U.B.S High School</h3>
+                    <p>Secondary School Certificate</p>
+                    <p class="education-period">Mar 2012</p>
+                </div>
+            </div>
+        </section>
+
+        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 4rem 0;">
+
+        <section class="section" id="certs">
+            <h2 class="section-heading" data-animate>
+                <i class="fas fa-award"></i> Certifications & Training
+            </h2>
+            <div data-animate>
+                <div class="card">
+                    <h3>Certifications</h3>
+                    <ul class="cert-list">
+                        <li>SAP Certified Development Associate – SAP Cloud Platform Integration</li>
+                        <li>SAP ABAP – In‑house certification (Capgemini)</li>
+                    </ul>
+                    <h3 style="margin-top: 1.5rem;">Training & Community</h3>
+                    <ul class="cert-list">
+                        <li>SAP PI/PO – In‑house (Integration Suite)</li>
+                        <li>SAP UI5 – Beginner (Integration Suite)</li>
+                        <li>Conducted classroom trainings: PI/PO and SuccessFactors↔CPI integrations</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 4rem 0;">
+
+        <section class="section" id="contact">
+            <h2 class="section-heading" data-animate>
+                <i class="fas fa-envelope-open-text"></i> Contact
+            </h2>
+            <div class="card contact-card" data-animate>
+                <div class="card-content">
+                    <p><i class="fas fa-envelope"></i> <a href="mailto:v.ashutosh95@gmail.com">v.ashutosh95@gmail.com</a></p>
+                    <p><i class="fas fa-phone-alt"></i> <a href="tel:+919987554467">+91 9987554467</a></p>
+                    <p><i class="fab fa-linkedin"></i> <a href="https://www.linkedin.com/in/ashutosh-vishwakarma-177a17136/" target="_blank">LinkedIn Profile</a></p>
+                    <p><i class="fas fa-map-marker-alt"></i> Thane, Maharashtra, India</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <p>© 2024 Ashutosh Vishwakarma. Built with modern web standards.</p>
+    </footer>
+
+    <script>
+        // Smooth scroll for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80, // Adjust for sticky header height
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        const navbarLinks = document.querySelectorAll('.navbar-links a, .dropdown-menu a');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            dropdownMenu.classList.toggle('active');
+        });
+
+        // Close menu on link click for mobile
+        dropdownMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                dropdownMenu.classList.remove('active');
+            });
+        });
+
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.setAttribute('data-animate', 'true');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('[data-animate]').forEach(element => {
+            observer.observe(element);
+        });
+    </script>
+</body>
+</html>
