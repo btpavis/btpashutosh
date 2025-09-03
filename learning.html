@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ashutosh Vishwakarma - Learning & Insights</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Styles unique to the Learning & Insights page */
+
+        /* Search box styling - REMOVED */
+
+        /* Section and heading styles (kept here for visual coherence with the search box) */
+        .section {
+            padding: 5rem 0;
+            scroll-margin-top: 100px;
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--primary-color);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.9rem;
+        }
+
+        .section-heading i {
+            color: var(--secondary-color);
+        }
+
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -15px;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 4px;
+            background-color: var(--secondary-color);
+            border-radius: 2px;
+        }
+
+        /* Card-specific styles */
+        .card {
+            background-color: var(--card-bg-color);
+            border-radius: 1rem;
+            padding: 2.5rem;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 2rem;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px var(--hover-shadow);
+        }
+
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        /* Buttons (kept for local override) */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.85rem 1.8rem;
+            border-radius: 9999px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px var(--hover-shadow);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        [data-animate] {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        [data-animate="true"] {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="index.html" class="navbar-logo">Ashutosh Vishwakarma</a>
+            <div class="navbar-links">
+                <a href="index.html#about">About</a>
+                <a href="index.html#skills">Skills</a>
+                <a href="learning.html">Learning & Insights</a>
+                <a href="index.html#certs">Certifications</a>
+                <a href="index.html#contact">Contact</a>
+            </div>
+            <i class="fas fa-bars mobile-menu-icon" id="mobile-menu-btn"></i>
+        </div>
+        <div class="dropdown-menu" id="dropdown-menu">
+            <a href="index.html#about">About</a>
+            <a href="index.html#skills">Skills</a>
+            <a href="learning.html">Learning & Insights</a>
+            <a href="index.html#certs">Certifications</a>
+            <a href="index.html#contact">Contact</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="section" id="learning-content">
+            <h2 class="section-heading" data-animate>
+                <i class="fas fa-book-open"></i> Learning & Insights
+            </h2>
+            <div id="articles-container" data-animate>
+               <!-- <div class="card article">
+                    <h3>Learn SAP CPI</h3>
+                    <p>A comprehensive guide to get started with SAP Cloud Platform Integration (CPI), covering the basics of iFlow design, key adapters, and best practices for beginners. Learn how to connect systems and manage your first integration project.</p>
+                    <a href="sap_cpi_tutorial.html" class="btn btn-secondary">Read Article <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+               <div class="card article">
+                    <h3>Another Article on a Technical Topic</h3>
+                    <p>Discuss a complex problem you solved, or provide a tutorial on a specific SAP integration. This section can serve as a personal blog.</p>
+                    <a href="#" class="btn btn-secondary">Read Article <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="card article">
+                    <h3>Tips for SAP Integration with Cloud Solutions</h3>
+                    <p>Provide helpful tips and best practices for integrating SAP with various cloud platforms like SuccessFactors, Salesforce, and Azure. You can highlight the benefits and challenges of multi-cloud environments.</p>
+                    <a href="#" class="btn btn-secondary">Read Article <i class="fas fa-arrow-right"></i></a>
+                </div> -->
+
+                <div class="card article">
+                    <h3>Exploring Groovy for SAP CPI Mappings</h3>
+                    <p>This article can be a detailed guide on using custom scripting for complex data transformations within SAP Cloud Platform Integration. Share code snippets and examples to make it practical.</p>
+                    <a href="groovy_javascript.html" class="btn btn-secondary">Read Article <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2024 Ashutosh Vishwakarma. Built with modern web standards.</p>
+    </footer>
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            dropdownMenu.classList.toggle('active');
+        });
+
+        dropdownMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                dropdownMenu.classList.remove('active');
+            });
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.setAttribute('data-animate', 'true');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('[data-animate]').forEach(element => {
+            observer.observe(element);
+        });
+    </script>
+</body>
+</html>

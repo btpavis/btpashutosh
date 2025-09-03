@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering the SAP CPI Content Modifier</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        pre {
+            background-color: #e9ecef;
+            border-left: 4px solid var(--secondary-color);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .image-description {
+            font-style: italic;
+            color: var(--text-color-light);
+            text-align: center;
+            margin: 1.5rem 0;
+            padding: 15px;
+            background-color: var(--background-color);
+            border-radius: 0.5rem;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="index.html" class="navbar-logo">Ashutosh Vishwakarma</a>
+            <div class="navbar-links">
+                <a href="index.html#about">About</a>
+                <a href="index.html#skills">Skills</a>
+                <a href="learning.html">Learning & Insights</a>
+                <a href="index.html#certs">Certifications</a>
+                <a href="index.html#contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="page-container">
+            <a href="sap_cpi_tutorial.html" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to CPI Modules
+            </a>
+            <header>
+                <h1>Mastering the SAP CPI Content Modifier</h1>
+                <p>A structured lesson with diagrams and examples.</p>
+                <hr style="border: none; border-top: 1px solid var(--border-color); margin: 2rem 0;">
+            </header>
+
+            <section>
+                <h2>Introduction</h2>
+                <p>Alright, settle in everyone. Today, we're going to dive into one of the most fundamental and powerful steps in SAP CPI: the <strong>Content Modifier</strong>. Think of a Content Modifier as a workshop for your message. As a message travels through your integration flow (iFlow), it's like a package. The Content Modifier is the place where you can open that package and change its contents, add new labels, or even replace the entire package with a new one.</p>
+            </section>
+
+            <section>
+                <h3>The Three Parts of a Message in CPI</h3>
+                <p>Before we get to the Content Modifier itself, you need to understand the three main components of a message in SAP CPI:</p>
+                <ol>
+                    <li><strong>Headers:</strong> These are like the shipping labels on our package. They contain metadata about the message, such as the sender, receiver, content type, or any custom information needed for routing.</li>
+                    <li><strong>Properties:</strong> These are internal notes or flags that are only used <em>within</em> the iFlow. They are not sent to the target system.</li>
+                    <li><strong>Body (or Payload):</strong> This is the actual content of the package. It could be an XML file, a JSON document, plain text, or any other type of data.</li>
+                </ol>
+                <p>The Content Modifier is the tool we use to manipulate all three of these components.</p>
+            </section>
+
+            <section>
+                <h3>The Content Modifier in an Integration Flow</h3>
+                <p>First, let's visualize how the Content Modifier fits into a simple integration flow (iFlow). It's a key processing step that you place on the canvas between your sender and receiver systems.</p>
+                <p class="text-center">Here is a diagram showing its position:</p>
+                <div class="image-description">
+                    <p>*Image Description:* A simple diagram of a message flow. An arrow labeled "Sender System" points to a box labeled "Content Modifier," which in turn has an arrow pointing to a box labeled "Receiver System." This visually represents the Content Modifier as a processing step in the middle of a transaction.</p>
+                </div>
+            </section>
+
+            <section>
+                <h3>Configuring the Content Modifier</h3>
+                <p>Now, let's look at what the Content Modifier looks like on the inside. When you double-click on the step, you'll see a configuration panel. This is where you can define headers, properties, and the message body.</p>
+                <p class="text-center">Here is a screenshot of the Content Modifier's configuration screen:</p>
+                <div class="image-description">
+                    <p>*Image Description:* A screenshot of the Content Modifier's configuration panel in SAP Cloud Integration. The panel has three main tabs: "Headers", "Properties", and "Body". This shows where you define the modifications to each part of the message.</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Example: A Simple Use Case</h2>
+                <p>Let's walk through a practical example. Imagine we have a simple scenario where an external system sends us a customer ID, and we need to use this ID to fetch customer details from a database. However, the database requires the customer ID to be passed as a property, and we also want to set a custom header for logging purposes.</p>
+
+                <h4>Scenario Flow:</h4>
+                <ol>
+                    <li>A sender system sends an XML payload with a customer ID.</li>
+                    <li>We use a Content Modifier to:
+                        <ul>
+                            <li>Extract the customer ID from the XML body and store it as a property.</li>
+                            <li>Add a new header for a correlation ID.</li>
+                        </ul>
+                    </li>
+                    <li>The rest of the iFlow uses this property to look up customer details.</li>
+                </ol>
+
+                <p>First, let's assume the incoming XML payload looks like this:</p>
+                <pre><code>&lt;Customer&gt;
+    &lt;CustomerID&gt;12345&lt;/CustomerID&gt;
+    &lt;Name&gt;John Doe&lt;/Name&gt;
+&lt;/Customer&gt;</code></pre>
+
+                <h4>Step-by-Step Configuration</h4>
+                <p><strong>Step 1:</strong> Add the Content Modifier to your iFlow.</p>
+                <p><strong>Step 2: Configure the Properties.</strong> Inside the Content Modifier, go to the <strong>Properties</strong> tab. We need to extract the <code>CustomerID</code> from the incoming message. Here is what that configuration would look like:</p>
+                <div class="image-description">
+                    <p>*Image Description:* A screenshot of the "Properties" tab within the Content Modifier configuration. It shows a table with a single row. The columns are "Name" (with value "customerID"), "Type" (with value "XPath"), and "Value" (with value "//CustomerID"). This demonstrates how to configure the extraction of data from the payload.</p>
+                </div>
+
+                <p>With this configuration, SAP CPI will use the XPath expression <code>//CustomerID</code> to find the value "12345" in the incoming XML and store it in a property named <code>customerID</code>.</p>
+
+                <p><strong>Step 3: Configure the Headers.</strong> Next, let's add a custom header. Go to the <strong>Headers</strong> tab. Here, you would configure:</p>
+                <ul>
+                    <li><strong>Action:</strong> <code>Create</code></li>
+                    <li><strong>Name:</strong> <code>sap_messageID</code></li>
+                    <li><strong>Type:</strong> <code>Expression</code></li>
+                    <li><strong>Value:</strong> <code>${header.CamelMessageId}</code></li>
+                </ul>
+
+                <p><strong>Step 4: The Result.</strong> After the message passes through this Content Modifier, the message payload remains the same, but it now has two new pieces of information attached to it: a <strong>property</strong> called <code>customerID</code> and a <strong>header</strong> called <code>sap_messageID</code>. These can now be used in subsequent steps of the iFlow.</p>
+            </section>
+
+            <section>
+                <h2>The Takeaway</h2>
+                <p>The Content Modifier is your go-to tool for manipulating message data in simple, non-mapping scenarios. It is an extremely versatile step that you'll use constantly in your iFlows for tasks like: setting up variables for a router step, adding authentication tokens to a header, and storing data for later use in a script.</p>
+                <p>Mastering the Content Modifier is a crucial step in becoming proficient in SAP CPI. Any questions?</p>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2024 Ashutosh Vishwakarma. Built with modern web standards.</p>
+    </footer>
+
+</body>
+
+</html>

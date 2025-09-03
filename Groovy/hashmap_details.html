@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application of HashMap in SAP CPI Groovy Script - Ashutosh Vishwakarma</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        /* Article-specific styles for better readability */
+        .article-content {
+            background-color: var(--card-bg-color);
+            border-radius: 1rem;
+            padding: 3rem;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+        .article-content h1, .article-content h2, .article-content h3 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        .article-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-color-dark);
+            margin-bottom: 1.5rem;
+        }
+        .article-content ul {
+            padding-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .article-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-color-dark);
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--secondary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            overflow-x: auto;
+            border-radius: 0.5rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover {
+            color: var(--secondary-color);
+        }
+        .section {
+            padding: 5rem 0;
+            scroll-margin-top: 100px;
+        }
+        .section-heading {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--primary-color);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.9rem;
+        }
+        .section-heading i {
+            color: var(--secondary-color);
+        }
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -15px;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 4px;
+            background-color: var(--secondary-color);
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="../index.html" class="navbar-logo">Ashutosh Vishwakarma</a>
+        </div>
+        <div class="dropdown-menu" id="dropdown-menu">
+            <a href="index.html#about">About</a>
+            <a href="index.html#skills">Skills</a>
+            <a href="learning.html">Learning & Insights</a>
+            <a href="index.html#certs">Certifications</a>
+            <a href="index.html#contact">Contact</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="section">
+            <a href="../groovy_javascript.html" class="back-link">&larr; Back to Groovy & JavaScript</a>
+            <h2 class="section-heading" data-animate>
+                <i class="fas fa-code"></i> Application of HashMap in SAP CPI Groovy Script
+            </h2>
+            <div class="article-content" data-animate>
+                <p>HashMaps are a fundamental and highly efficient data structure in Groovy, and they are incredibly useful for handling key-value pairs within SAP CPI integration flows. They provide a quick way to store and retrieve data, making your scripts more performant and easier to manage, especially when dealing with dynamic message payloads or configuration data.</p>
+                <p>A HashMap maps keys to values. Think of it like a dictionary or a phonebook where you look up a person's name (the key) to find their phone number (the value). In a Groovy script, you can use it to store and access message headers, properties, or any other data you need to manipulate.</p>
+                
+                <h3>Why Use a HashMap in SAP CPI?</h3>
+                <ul>
+                    <li><strong>Efficient Data Access:</strong> Retrieving a value by its key is extremely fast, making it ideal for lookup operations.</li>
+                    <li><strong>Flexible Data Storage:</strong> It can store different types of data (strings, numbers, objects) as values.</li>
+                    <li><strong>Simplifies Code:</strong> It reduces the need for complex conditional statements (if-else, switch) by allowing you to map inputs to specific actions or values.</li>
+                    <li><strong>Dynamic Lookups:</strong> You can build the map dynamically based on your incoming message payload, which is a common requirement in integration scenarios.</li>
+                </ul>
+
+                <h3>Example: Using HashMap to Map and Transform Data</h3>
+                <p>Let's consider a common scenario in SAP CPI: transforming a vendor's country code into a full country name. The challenge is you have to get the country code from another call in CPI and those values you need to use in message transformation of initial payload. We can use a HashMap to store the country code-to-name mapping.</p>
+                
+				<h4>Initial Payload before the HashMap Initialize:</h4>
+                <p>This in incoming message in which we need to modify with country code.</p>
+                <div class="code-block">
+<pre>
+&lt;root&gt;
+	&lt;row&gt;
+		&lt;City&gt;Delhi&lt;/City&gt;
+		&lt;Country&gt;IN&lt;/Country&gt;
+	&lt;/row&gt;
+	&lt;row&gt;
+		&lt;City&gt;Berlin&lt;/City&gt;
+		&lt;Country&gt;DE&lt;/Country&gt;
+	&lt;/row&gt;
+&lt;/root&gt;
+</pre>
+                </div>
+				
+                <h4>Groovy Script to Prepare the HashMap:</h4>
+                <p>This script initializes a HashMap and stores it as a message property.</p>
+                <div class="code-block">
+<pre>
+import com.sap.gateway.ip.core.customdev.util.Message;
+import java.util.HashMap;
+
+def Message processData(Message message) {
+    // Initialize a new HashMap
+    HashMap<String,String> CountryCode = new HashMap<String,String>();
+	
+	// Store the HashMap as a message exchange property
+    message.setProperty("countryMapping",CountryCode);
+
+    return message
+}
+</pre>
+                </div>
+				
+				<h4>The payload extracted from another call (Lookup Payload):</h4>
+                <p>This xml payload contain country code along with its name.</p>
+                <div class="code-block">
+<pre>
+&lt;root&gt;
+	&lt;row&gt;
+		&lt;CountryCode&gt;IN&lt;/CountryCode&gt;
+		&lt;CountryName&gt;India&lt;/CountryName&gt;
+	&lt;/row&gt;
+	&lt;row&gt;
+		&lt;CountryCode&gt;DE&lt;/CountryCode&gt;
+		&lt;CountryName&gt;Germany&lt;/CountryName&gt;
+	&lt;/row&gt;
+	&lt;row&gt;
+		&lt;CountryCode&gt;US&lt;/CountryCode&gt;
+		&lt;CountryName&gt;United State&lt;/CountryName&gt;
+	&lt;/row&gt;
+	&lt;row&gt;
+		&lt;CountryCode&gt;JP&lt;/CountryCode&gt;
+		&lt;CountryName&gt;Japan&lt;/CountryName&gt;
+	&lt;/row&gt;
+&lt;/root&gt;
+</pre>
+                </div>
+				
+				<h4>Groovy Script to store this values in HashMap:</h4>
+                <p>This stores country code as Key and country name as its values against the key.</p>
+                <div class="code-block">
+<pre>
+import com.sap.gateway.ip.core.customdev.util.Message;
+def Message processData(Message message) 
+{
+    def body = message.getBody(java.lang.String);
+    def list = new XmlSlurper().parseText(body);
+
+    def map = message.getProperties();
+    
+    String code = "";
+    String val = "";
+    
+    def act = map.get("countryMapping");
+    list.row.each
+    {
+        code = it.CountryCode.text();
+        val = it.CountryName.text();
+        
+        act.put(code,val);
+    }
+    message.setProperty("countryMapping", act);
+    return message;
+}
+</pre>
+                </div>
+                
+                <h4>Message Mapping User-Defined Function Code:</h4>
+                <p>This function, used in a Message Mapping, retrieves the HashMap property from the message exchange and uses it for the lookup.</p>
+                <div class="code-block">
+<pre>
+import com.sap.it.api.mapping.*;
+
+def String getFrequency(String code, MappingContext context)
+{
+    def strData="";
+    
+    HashMap<String,String> getdata = context.getProperty("countryMapping");
+    strData = getdata.get(code);
+    if(!"".equals(strData) && (!" ".equals(strData)) && strData != null)
+    {
+        return strData;
+    }
+    else
+    {
+        return "";
+    }
+}
+</pre>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2024 Ashutosh Vishwakarma. Built with modern web standards.</p>
+    </footer>
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            dropdownMenu.classList.toggle('active');
+        });
+
+        dropdownMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                dropdownMenu.classList.remove('active');
+            });
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.setAttribute('data-animate', 'true');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('[data-animate]').forEach(element => {
+            observer.observe(element);
+        });
+    </script>
+</body>
+</html>
+</html>

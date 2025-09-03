@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAP CPI Tutorial - Ashutosh Vishwakarma</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .topic-card {
+            background-color: var(--background-color);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .topic-link {
+            text-decoration: none;
+            color: var(--text-color-dark);
+            font-weight: 600;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .topic-link:hover {
+            color: var(--primary-color);
+        }
+
+        .topic-link .icon {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .child-topics {
+            max-height: 0;
+            overflow: hidden;
+            margin-top: -15px;
+            padding: 0 25px 0 0;
+            border-radius: 0 0 0.75rem 0.75rem;
+            background-color: var(--card-bg-color);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
+        }
+
+        .page-container>ul>li:hover .child-topics {
+            max-height: 500px;
+            padding-top: 25px;
+            padding-bottom: 10px;
+            opacity: 1;
+        }
+
+        .child-topics li {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            padding-left: 45px;
+            position: relative;
+            font-weight: 400;
+        }
+
+        .child-topics li::before {
+            content: "•";
+            color: var(--secondary-color);
+            font-size: 1.2em;
+            position: absolute;
+            left: 20px;
+            top: -2px;
+            line-height: inherit;
+        }
+
+        .child-topics a {
+            color: var(--text-color-dark);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .child-topics a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="index.html" class="navbar-logo">Ashutosh Vishwakarma</a>
+            <div class="navbar-links">
+                <a href="index.html#about">About</a>
+                <a href="index.html#skills">Skills</a>
+                <a href="learning.html">Learning & Insights</a>
+                <a href="index.html#certs">Certifications</a>
+                <a href="index.html#contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="page-container">
+            <a href="learning.html" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Insights
+            </a>
+
+            <h1>Learn SAP CPI: Complete Course Content</h1>
+
+            <p>Welcome to the comprehensive course on SAP Cloud Platform Integration (CPI). Below is a list of all the topics covered, designed to give you a deep understanding of cloud-based integrations. Hover over any topic to see its sub-topics, or click to view its detailed content.</p>
+
+            <hr style="border: none; border-top: 1px solid var(--border-color); margin: 2rem 0;">
+
+            <h2>Course Modules</h2>
+            <ul>
+                <li>
+                    <div class="topic-card">
+                        <a href="cpi_fundamentals.html" class="topic-link">
+                            <i class="fas fa-book-open icon"></i>
+                            1. Introduction to SAP CPI Fundamentals
+                        </a>
+                    </div>
+                    <ul class="child-topics">
+                        <li><a href="cpi_fundamentals.html#what-is-integration">What is Integration</a></li>
+                        <li><a href="cpi_fundamentals.html#what-is-middleware">What is Middleware</a></li>
+                        <li><a href="cpi_fundamentals.html#what-is-sap-cpi">What is SAP CPI</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <div class="topic-card">
+                        <a href="#" class="topic-link">
+                            <i class="fas fa-sitemap icon"></i>
+                            2. Cloud Integration Architecture & iFlow Design
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <div class="topic-card">
+                        <a href="#" class="topic-link">
+                            <i class="fas fa-palette icon"></i>
+                            3. CPI Design Objects / Palette Objects
+                        </a>
+                    </div>
+                    <ul class="child-topics">
+                        <li><a href="#">Content Modifier</a></li>
+                        <li><a href="#">Content Enricher</a></li>
+                        <li><a href="#">Data Transformation and Mappings</a></li>
+                        <li><a href="#">Content Based Routing</a></li>
+                        <li><a href="#">Sender and Receiver Steps</a></li>
+                        <li><a href="#">Integration Process and Local Subprocess</a></li>
+                        <li><a href="#">Exception Subprocess</a></li>
+                        <li><a href="#">Events</a></li>
+                        <li><a href="#">Asynchronous Message Handling</a></li>
+                        <li><a href="#">Message Converter and Decoder</a></li>
+                        <li><a href="#">Splitter, Gather and Aggregator</a></li>
+                        <li><a href="#">Multicast and Join</a></li>
+                        <li><a href="#">Timer-Based Message Transfer</a></li>
+                        <li><a href="#">Structuring of Large Integration Flows</a></li>
+                        <li><a href="#">Message Persistence Enhancement</a></li>
+                        <li><a href="#">Data Store Operation</a></li>
+                        <li><a href="#">Working with Value Mappings</a></li>
+                        <li><a href="#">Groovy Scripting and Exception Handling</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <div class="topic-card">
+                        <a href="#" class="topic-link">
+                            <i class="fas fa-plug icon"></i>
+                            4. Connectors & Adapters (HTTP, SFTP, REST, SOAP)
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <div class="topic-card">
+                        <a href="#" class="topic-link">
+                            <i class="fas fa-exchange-alt icon"></i>
+                            5. Data Transformation & Message Mappings
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <div class="topic-card">
+                        <a href="#" class="topic-link">
+                            <i class="fas fa-code icon"></i>
+                            6. Advanced Groovy Scripting & Functions
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <div class="topic-card">
+                        <a href="#" class="topic-link">
+                            <i class="fas fa-lock icon"></i>
+                            7. Security, Certificates & Credential Management
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <div class="topic-card">
+                        <a href="#" class="topic-link">
+                            <i class="fas fa-chart-line icon"></i>
+                            8. Monitoring & Troubleshooting
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <div class="topic-card">
+                        <a href="#" class="topic-link">
+                            <i class="fas fa-cogs icon"></i>
+                            9. SAP API Management (APIM)
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <div class="topic-card">
+                        <a href="#" class="topic-link">
+                            <i class="fas fa-handshake icon"></i>
+                            10. B2B & EDI Integration Scenarios
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <div class="topic-card">
+                        <a href="#" class="topic-link">
+                            <i class="fas fa-tasks icon"></i>
+                            11. Full Lifecycle Implementation Project Walkthrough
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2024 Ashutosh Vishwakarma. Built with modern web standards.</p>
+    </footer>
+
+</body>
+
+</html>

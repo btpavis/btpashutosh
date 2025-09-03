@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Working with XML and JSON Payloads - Ashutosh Vishwakarma</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        /* Article-specific styles for better readability */
+        .article-content {
+            background-color: var(--card-bg-color);
+            border-radius: 1rem;
+            padding: 3rem;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+        .article-content h1, .article-content h2, .article-content h3 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        .article-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-color-dark);
+            margin-bottom: 1.5rem;
+        }
+        .article-content ul {
+            padding-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .article-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-color-dark);
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--secondary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            overflow-x: auto;
+            border-radius: 0.5rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover {
+            color: var(--secondary-color);
+        }
+        .section {
+            padding: 5rem 0;
+            scroll-margin-top: 100px;
+        }
+        .section-heading {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--primary-color);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.9rem;
+        }
+        .section-heading i {
+            color: var(--secondary-color);
+        }
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -15px;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 4px;
+            background-color: var(--secondary-color);
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="../index.html" class="navbar-logo">Ashutosh Vishwakarma</a>
+        </div>
+        <div class="dropdown-menu" id="dropdown-menu">
+            <a href="index.html#about">About</a>
+            <a href="index.html#skills">Skills</a>
+            <a href="learning.html">Learning & Insights</a>
+            <a href="index.html#certs">Certifications</a>
+            <a href="index.html#contact">Contact</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="section">
+            <a href="../groovy_javascript.html" class="back-link">&larr; Back to Groovy & JavaScript</a>
+            <h2 class="section-heading" data-animate>
+                <i class="fas fa-file-code"></i> Working with XML and JSON Payloads
+            </h2>
+            <div class="article-content" data-animate>
+                <h3>Introduction to Scripting for Payloads</h3>
+                <p>In SAP CPI, not all data transformations can be handled by the standard Message Mapping or XML Converter. For complex logic, dynamic routing, or when dealing with payloads that have complex structures, Groovy and JavaScript are essential. The Groovy language, in particular, offers powerful, built-in libraries for handling both XML and JSON data with ease.</p>
+
+                <h4>Working with XML using Groovy's `XmlSlurper`</h4>
+                <p>The **`XmlSlurper`** class is a simple and fast way to parse XML payloads. It treats the XML as a tree-like structure, allowing you to easily navigate to and access elements using a simple dot notation.</p>
+
+                <h5>Example XML Payload:</h5>
+                <div class="code-block">
+<pre>
+&lt;Products&gt;
+  &lt;Product id=&quot;1001&quot;&gt;
+    &lt;Name&gt;Laptop&lt;/Name&gt;
+    &lt;Price&gt;1200.50&lt;/Price&gt;
+  &lt;/Product&gt;
+  &lt;Product id=&quot;1002&quot;&gt;
+    &lt;Name&gt;Mouse&lt;/Name&gt;
+    &lt;Price&gt;25.00&lt;/Price&gt;
+  &lt;/Product&gt;
+&lt;/Products&gt;
+</pre>
+                </div>
+                <h5>Example Groovy Script (`XmlSlurper`):</h5>
+                <div class="code-block">
+<pre>
+import com.sap.gateway.ip.core.customdev.util.Message
+import groovy.xml.XmlSlurper
+
+def Message processData(Message message) {
+    def xmlPayload = message.getBody(String.class)
+    def xmlSlurper = new XmlSlurper()
+    def products = xmlSlurper.parseText(xmlPayload)
+
+    // Find the price of the product with ID "1001" and set it as a header
+    def laptopPrice = products.Product.find { it.@id == '1001' }.Price.text()
+    message.setHeader('LaptopPrice', laptopPrice)
+    
+    // You can also modify the XML structure if needed
+    products.Product[1].Name = 'Wireless Mouse'
+    message.setBody(products.toString())
+
+    return message
+}
+</pre>
+                </div>
+
+                <h4>Working with JSON using Groovy's `JsonSlurper`</h4>
+                <p>The **`JsonSlurper`** class provides a similar, intuitive approach for parsing JSON payloads. It converts the JSON string into a native Groovy object (like a Map or a List), which you can then navigate using dot notation or array indexing.</p>
+
+                <h5>Example JSON Payload:</h5>
+                <div class="code-block">
+<pre>
+{
+  &quot;user&quot;: {
+    &quot;id&quot;: &quot;u1234&quot;,
+    &quot;name&quot;: &quot;John Doe&quot;,
+    &quot;contact&quot;: {
+      &quot;email&quot;: &quot;john.doe@example.com&quot;,
+      &quot;phone&quot;: &quot;555-1234&quot;
+    },
+    &quot;roles&quot;: [&quot;admin&quot;, &quot;developer&quot;]
+  }
+}
+</pre>
+                </div>
+                <h5>Example Groovy Script (`JsonSlurper`):</h5>
+                <div class="code-block">
+<pre>
+import com.sap.gateway.ip.core.customdev.util.Message
+import groovy.json.JsonSlurper
+
+def Message processData(Message message) {
+    def jsonPayload = message.getBody(String.class)
+    def jsonSlurper = new JsonSlurper()
+    def parsedJson = jsonSlurper.parseText(jsonPayload)
+
+    // Access the user's email and set it as a header
+    def userEmail = parsedJson.user.contact.email
+    message.setHeader('UserEmail', userEmail)
+    
+    // Access the second role in the 'roles' array
+    def secondRole = parsedJson.user.roles[1]
+    message.setHeader('SecondRole', secondRole)
+
+    return message
+}
+</pre>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2024 Ashutosh Vishwakarma. Built with modern web standards.</p>
+    </footer>
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            dropdownMenu.classList.toggle('active');
+        });
+
+        dropdownMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                dropdownMenu.classList.remove('active');
+            });
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.setAttribute('data-animate', 'true');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('[data-animate]').forEach(element => {
+            observer.observe(element);
+        });
+    </script>
+</body>
+</html>

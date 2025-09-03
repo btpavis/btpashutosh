@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exploring Groovy & JavaScript for SAP CPI - Ashutosh Vishwakarma</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Article and Search-specific styles */
+        .search-box {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-box input {
+            width: 100%;
+            max-width: 600px;
+            padding: 0.8rem 1.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 9999px;
+            font-size: 1rem;
+            color: var(--text-color-dark);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2);
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-color-light);
+        }
+
+        .article-content {
+            background-color: var(--card-bg-color);
+            border-radius: 1rem;
+            padding: 3rem;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+        .article-content h1, .article-content h2, .article-content h3 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        .article-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-color-dark);
+            margin-bottom: 1.5rem;
+        }
+        .article-content ul {
+            padding-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .article-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-color-dark);
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--secondary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            overflow-x: auto;
+            border-radius: 0.5rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover {
+            color: var(--secondary-color);
+        }
+        .section {
+            padding: 5rem 0;
+            scroll-margin-top: 100px;
+        }
+        .section-heading {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--primary-color);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.9rem;
+        }
+        .section-heading i {
+            color: var(--secondary-color);
+        }
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -15px;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 4px;
+            background-color: var(--secondary-color);
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="index.html" class="navbar-logo">Ashutosh Vishwakarma</a>
+        </div>
+        <div class="dropdown-menu" id="dropdown-menu">
+            <a href="index.html#about">About</a>
+            <a href="index.html#skills">Skills</a>
+            <a href="learning.html">Learning & Insights</a>
+            <a href="index.html#certs">Certifications</a>
+            <a href="index.html#contact">Contact</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="section" id="learning-content">
+            <a href="learning.html" class="back-link">&larr; Back to Learning & Insights</a>
+            <h2 class="section-heading" data-animate>
+                <i class="fas fa-file-code"></i> Exploring Groovy & JavaScript for SAP CPI
+            </h2>
+            <div class="search-box" data-animate>
+                <input type="search" id="searchInput" placeholder="Search for a topic..." aria-label="Search articles">
+            </div>
+
+            <div class="article-content" data-animate>
+                <div id="topics-container">
+                    <div class="card article-topic">
+                        <h3><a href="Groovy/hashmap_details.html">Application of HashMap in Groovy Scripts</a></h3>
+                        <p>Learn how to use HashMaps as a powerful tool for efficient data lookups and transformations in your SAP CPI Groovy scripts.</p>
+                    </div>
+
+                    <div class="card article-topic">
+                        <h3><a href="Groovy/xml_json_payloads.html">Working with XML and JSON Payloads</a></h3>
+                        <p>A guide to parsing and manipulating XML and JSON data using Groovy's XMLSlurper and JsonSlurper.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2024 Ashutosh Vishwakarma. Built with modern web standards.</p>
+    </footer>
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            dropdownMenu.classList.toggle('active');
+        });
+
+        dropdownMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                dropdownMenu.classList.remove('active');
+            });
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.setAttribute('data-animate', 'true');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('[data-animate]').forEach(element => {
+            observer.observe(element);
+        });
+
+        // Search Functionality for topic cards
+        const searchInput = document.getElementById('searchInput');
+        const topicsContainer = document.getElementById('topics-container');
+        const topicCards = topicsContainer.getElementsByClassName('article-topic');
+
+        searchInput.addEventListener('keyup', () => {
+            const searchQuery = searchInput.value.toLowerCase();
+            
+            for (let i = 0; i < topicCards.length; i++) {
+                const topic = topicCards[i];
+                const topicText = topic.textContent || topic.innerText;
+                
+                if (topicText.toLowerCase().includes(searchQuery)) {
+                    topic.style.display = ''; // Show topic card
+                } else {
+                    topic.style.display = 'none'; // Hide topic card
+                }
+            }
+        });
+    </script>
+</body>
+</html>

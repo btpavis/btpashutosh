@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAP CPI Fundamentals - Ashutosh Vishwakarma</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #007bff;
+            --background-color: #f0f2f5;
+            --card-bg-color: #ffffff;
+            --text-color-dark: #212529;
+            --text-color-light: #6c757d;
+            --border-color: #dee2e6;
+            --hover-shadow: rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color-dark);
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            max-width: 1024px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+        
+        /* Nav Bar */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-logo {
+            font-weight: 900;
+            font-size: 1.6rem;
+            letter-spacing: -0.05em;
+            text-decoration: none;
+            color: var(--primary-color);
+            transition: color 0.3s ease;
+        }
+        .navbar-logo:hover {
+            color: var(--secondary-color);
+        }
+
+        .navbar-links {
+            display: none;
+            gap: 1.8rem;
+        }
+
+        .navbar-links a {
+            color: var(--text-color-dark);
+            font-weight: 600;
+            text-decoration: none;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .navbar-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: -8px;
+            left: 0;
+            background-color: var(--secondary-color);
+            transition: width 0.3s ease-in-out;
+        }
+
+        .navbar-links a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-icon {
+            display: block;
+            cursor: pointer;
+            font-size: 1.7rem;
+            color: var(--primary-color);
+        }
+
+        @media (min-width: 768px) {
+            .navbar-links {
+                display: flex;
+            }
+
+            .mobile-menu-icon {
+                display: none;
+            }
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: var(--card-bg-color);
+            border-top: 1px solid var(--border-color);
+            padding: 1rem 0;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+        .dropdown-menu a {
+            padding: 0.75rem 0;
+            width: 80%;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-color-dark);
+            font-weight: 500;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .dropdown-menu a:hover {
+            background-color: var(--background-color);
+            color: var(--primary-color);
+        }
+
+        .dropdown-menu.active {
+            display: flex;
+        }
+        
+        /* Sections */
+        .section {
+            padding: 5rem 0;
+            scroll-margin-top: 100px;
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--primary-color);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.9rem;
+        }
+        .section-heading i {
+            color: var(--secondary-color);
+        }
+
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -15px;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 4px;
+            background-color: var(--secondary-color);
+            border-radius: 2px;
+        }
+
+        /* Tutorial-specific styling */
+        .tutorial-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 3rem;
+            background-color: var(--card-bg-color);
+            border-radius: 1rem;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .tutorial-container h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .tutorial-container h2 {
+            font-size: 1.8rem;
+            color: var(--text-color-dark);
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .tutorial-container p {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-color-dark);
+        }
+
+        .tutorial-container ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .tutorial-container li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 0.5rem;
+        }
+
+        .tutorial-container li::before {
+            content: "•";
+            color: var(--secondary-color);
+            font-size: 1.5em;
+            position: absolute;
+            left: 0;
+            top: 0;
+            line-height: 1;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.85rem 1.8rem;
+            border-radius: 9999px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px var(--hover-shadow);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+        .btn-secondary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2.5rem 0;
+            font-size: 0.9rem;
+            color: var(--text-color-light);
+            border-top: 1px solid var(--border-color);
+            margin-top: 5rem;
+            background-color: var(--card-bg-color);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="index.html" class="navbar-logo">Ashutosh Vishwakarma</a>
+            <div class="navbar-links">
+                <a href="index.html#about">About</a>
+                <a href="index.html#skills">Skills</a>
+                <a href="learning.html">Learning & Insights</a>
+                <a href="index.html#certs">Certifications</a>
+                <a href="index.html#contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="container">
+        <div class="tutorial-container fade-in">
+            <a href="../sap_cpi_tutorial.html" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Course Content
+            </a>
+
+            <h1>1. Introduction to SAP CPI Fundamentals</h1>
+            
+            <p>In this section, you will learn the foundational concepts of SAP Cloud Platform Integration (CPI) within the broader SAP ecosystem. We will cover the key terminology and the basic architecture that makes CPI a powerful and flexible integration platform.</p>
+
+            <h2>What is SAP Integration Suite?</h2>
+            <p>SAP Integration Suite is a comprehensive, hybrid, and open integration platform-as-a-service (iPaaS) that simplifies and accelerates your integration journey. It provides a wide range of tools and services to connect SAP and non-SAP applications in various environments, including cloud-to-cloud and cloud-to-on-premise scenarios.</p>
+
+            <h2>The Role of SAP CPI</h2>
+            <p>Within the Integration Suite, SAP CPI (Cloud Platform Integration) is the core component for building integration flows (iFlows). It is a highly versatile and secure solution for designing, developing, and deploying integrations. It allows you to transform data, apply business logic, and route messages between different systems without the need for complex, point-to-point connections.</p>
+            
+            <h2>Basic iFlow Design Concepts</h2>
+            <p>An iFlow represents a complete integration scenario. It consists of a series of processing steps that define how a message is received, transformed, and sent to its destination. This module will introduce you to the fundamental components of an iFlow, such as:</p>
+            <ul>
+                <li>**Sender Channel:** The entry point for a message.</li>
+                <li>**Receiver Channel:** The exit point where the message is delivered.</li>
+                <li>**Message Mappings:** Used for converting data structures.</li>
+                <li>**Content Modifier:** Allows you to add, modify, or delete message headers, body, and properties.</li>
+            </ul>
+
+            <hr style="border: none; border-top: 1px solid var(--border-color); margin: 2rem 0;">
+
+            <p style="text-align: center;">You can add more detailed content, code snippets, and images here to enhance your tutorial.</p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2024 Ashutosh Vishwakarma. Built with modern web standards.</p>
+    </footer>
+
+</body>
+</html>
