@@ -3,11 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exploring Groovy & JavaScript for SAP CPI - Ashutosh Vishwakarma</title>
+    <title>Working with Date and Time - Groovy</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Article and Search-specific styles */
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #f97316;
+            --text-color-dark: #1f2937;
+            --text-color-light: #6b7280;
+            --card-bg-color: #ffffff;
+            --bg-color: #f3f4f6;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color-dark);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .navbar {
+            background-color: var(--card-bg-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 1rem 0;
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: var(--card-bg-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 1rem 1.5rem;
+            text-decoration: none;
+            color: var(--text-color-dark);
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: var(--bg-color);
+        }
+
         .search-box {
             display: flex;
             justify-content: center;
@@ -42,26 +113,21 @@
             padding: 3rem;
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
         }
+
         .article-content h1, .article-content h2, .article-content h3 {
             color: var(--primary-color);
             font-weight: 700;
             margin-top: 2rem;
             margin-bottom: 1rem;
         }
+
         .article-content p {
             font-size: 1.1rem;
             line-height: 1.8;
             color: var(--text-color-dark);
             margin-bottom: 1.5rem;
         }
-        .article-content ul {
-            padding-left: 2rem;
-            margin-bottom: 1.5rem;
-        }
-        .article-content li {
-            margin-bottom: 0.5rem;
-            color: var(--text-color-dark);
-        }
+
         .code-block {
             background-color: #f8f9fa;
             border: 1px solid var(--border-color);
@@ -73,6 +139,7 @@
             overflow-x: auto;
             border-radius: 0.5rem;
         }
+
         .back-link {
             display: inline-block;
             margin-bottom: 2rem;
@@ -81,13 +148,16 @@
             text-decoration: none;
             transition: color 0.3s ease;
         }
+
         .back-link:hover {
             color: var(--secondary-color);
         }
+
         .section {
             padding: 5rem 0;
             scroll-margin-top: 100px;
         }
+
         .section-heading {
             text-align: center;
             margin-bottom: 2.5rem;
@@ -101,9 +171,11 @@
             justify-content: center;
             gap: 0.9rem;
         }
+
         .section-heading i {
             color: var(--secondary-color);
         }
+
         .section-heading::after {
             content: '';
             position: absolute;
@@ -115,23 +187,23 @@
             background-color: var(--secondary-color);
             border-radius: 2px;
         }
-        .card {
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            transition: box-shadow 0.3s ease;
-        }
-        .card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            font-size: 0.9rem;
+            color: var(--text-color-light);
+            border-top: 1px solid var(--border-color);
         }
     </style>
 </head>
 <body>
-
     <nav class="navbar">
         <div class="container navbar-container">
             <a href="index.html" class="navbar-logo">Ashutosh Vishwakarma</a>
+            <div class="mobile-menu-btn" id="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
         </div>
         <div class="dropdown-menu" id="dropdown-menu">
             <a href="index.html#about">About</a>
@@ -141,62 +213,53 @@
             <a href="index.html#contact">Contact</a>
         </div>
     </nav>
-
     <main class="container">
         <section class="section" id="learning-content">
             <a href="learning.html" class="back-link">&larr; Back to Learning & Insights</a>
             <h2 class="section-heading" data-animate>
-                <i class="fas fa-file-code"></i> Exploring Groovy & JavaScript for SAP CPI
+                <i class="fas fa-file-code"></i> Working with Date and Time
             </h2>
             <div class="search-box" data-animate>
-                <input type="search" id="searchInput" placeholder="Search for a topic..." aria-label="Search articles">
+                <input type="search" id="searchInput" placeholder="Search this topic..." aria-label="Search articles">
             </div>
-
             <div class="article-content" data-animate>
                 <div id="topics-container">
-                    <div class="card article-topic">
-                        <h3><a href="Groovy/hashmap_details.html">Application of HashMap in Groovy Scripts</a></h3>
-                        <p>Learn how to use HashMaps as a powerful tool for efficient data lookups and transformations in your SAP CPI Groovy scripts.</p>
+                    <p>In integration scenarios, you often need to handle dates and times for logging, filtering, or data mapping. Groovy's date and time capabilities simplify these tasks significantly.</p>
+                    <h3>Getting the Current Date and Time</h3>
+                    <p>You can easily get the current date and time and format it for your needs.</p>
+                    <div class="code-block">
+                        <pre><code>import java.text.SimpleDateFormat
+
+def now = new Date();
+def formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+def formattedDate = formatter.format(now);
+// formattedDate will be something like "2024-05-20T10:30:00"
+message.setHeader("currentTimestamp", formattedDate);</code></pre>
                     </div>
-                    
-                    <div class="card article-topic">
-                        <h3><a href="Groovy/xml_json_payloads.html">Working with XML and JSON Payloads</a></h3>
-                        <p>A guide to parsing and manipulating XML and JSON data using Groovy's XMLSlurper and JsonSlurper.</p>
-                    </div>
-                    
-                    <div class="card article-topic">
-                        <h3><a href="Groovy/headers_properties.html">Using Message Headers and Properties</a></h3>
-                        <p>A deep dive into accessing, setting, and using headers and properties to pass data between steps in your integration flow.</p>
-                    </div>
-                    
-                    <div class="card article-topic">
-                        <h3><a href="Groovy/groovy_rest_apis.html">Calling External REST APIs from Groovy</a></h3>
-                        <p>Call an REST API inside groovy script.</p>
-                    </div>
-                    
-                    <div class="card article-topic">
-                        <h3><a href="Groovy/javascript_json.html">JSON Processing with JavaScript</a></h3>
-                        <p>A guide to parsing, creating, and manipulating JSON messages using the built-in JSON methods in SAP CPI JavaScript.</p>
-                    </div>
-					
-					<div class="card article-topic">
-                        <h3><a href="Groovy/value_mapping_groovy.html">Reading Value Mapping in Groovy</a></h3>
-                        <p>Learn how to use Value Mapping for efficient data lookups and transformations in your SAP CPI Groovy scripts.</p>
+                    <h3>Parsing a Date String</h3>
+                    <p>When you receive a date in a specific format, you can parse it into a `Date` object to perform calculations or reformat it.</p>
+                    <div class="code-block">
+                        <pre><code>import java.text.SimpleDateFormat
+
+def dateString = "2024-05-15";
+def formatter = new SimpleDateFormat("yyyy-MM-dd");
+def parsedDate = formatter.parse(dateString);
+// Add a few days to the date
+def futureDate = parsedDate + 5;
+message.setHeader("futureDate", futureDate.toString());</code></pre>
                     </div>
                 </div>
             </div>
         </section>
     </main>
-
     <footer class="footer">
         <p>© 2024 Ashutosh Vishwakarma. Built with modern web standards.</p>
     </footer>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const mobileMenuBtn = document.getElementById('mobile-menu-btn');
             const dropdownMenu = document.getElementById('dropdown-menu');
-            
+
             if (mobileMenuBtn && dropdownMenu) {
                 mobileMenuBtn.addEventListener('click', () => {
                     dropdownMenu.classList.toggle('active');
@@ -224,24 +287,18 @@
                 observer.observe(element);
             });
 
-            // Search Functionality for topic cards
             const searchInput = document.getElementById('searchInput');
-            const topicsContainer = document.getElementById('topics-container');
-            const topicCards = topicsContainer.getElementsByClassName('article-topic');
+            const articleContent = document.getElementById('topics-container');
 
             if (searchInput) {
                 searchInput.addEventListener('keyup', () => {
                     const searchQuery = searchInput.value.toLowerCase();
-                    
-                    for (let i = 0; i < topicCards.length; i++) {
-                        const topic = topicCards[i];
-                        const topicText = topic.textContent || topic.innerText;
-                        
-                        if (topicText.toLowerCase().includes(searchQuery)) {
-                            topic.style.display = 'block'; 
-                        } else {
-                            topic.style.display = 'none';
-                        }
+                    const allText = articleContent.textContent.toLowerCase();
+
+                    if (allText.includes(searchQuery)) {
+                        articleContent.style.display = 'block';
+                    } else {
+                        articleContent.style.display = 'none';
                     }
                 });
             }

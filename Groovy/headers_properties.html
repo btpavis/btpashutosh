@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Working with XML and JSON Payloads - Ashutosh Vishwakarma</title>
+    <title>Working with Message Headers and Properties - Ashutosh Vishwakarma</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../styles.css">
     <style>
@@ -108,108 +108,53 @@
         <section class="section">
             <a href="../groovy_javascript.html" class="back-link">&larr; Back to Groovy & JavaScript</a>
             <h2 class="section-heading" data-animate>
-                <i class="fas fa-file-code"></i> Working with XML and JSON Payloads
+                <i class="fas fa-code"></i> Working with Message Headers and Properties
             </h2>
             <div class="article-content" data-animate>
-                <h3>Introduction to Scripting for Payloads</h3>
-                <p>In SAP CPI, not all data transformations can be handled by the standard Message Mapping or XML Converter. For complex logic, dynamic routing, or when dealing with payloads that have complex structures, Groovy and JavaScript are essential. The Groovy language, in particular, offers powerful, built-in libraries for handling both XML and JSON data with ease.</p>
+                <p>In SAP CPI, <strong>Message Headers</strong> and <strong>Message Properties</strong> are crucial for storing and sharing data throughout an integration flow. While they both store key-value pairs, they have different use cases and lifecycle.</p>
+                
+                <h3>Headers vs. Properties: What's the Difference?</h3>
+                <ul>
+                    <li><strong>Headers:</strong> Are a fundamental part of the message itself, often containing technical information like HTTP request headers. They are typically used for temporary, transport-related data and are passed with the message payload from one step to another.</li>
+                    <li><strong>Properties:</strong> Are part of the integration flow's execution context. They persist for the entire duration of the message processing and can be accessed by any step in the flow. They are ideal for storing business-specific data or intermediate values that you need to reference later.</li>
+                </ul>
 
-                <h4>Working with XML using Groovy's 'XmlSlurper'</h4>
-                <p>The <strong>'XmlSlurper'</strong> class is a simple and fast way to parse XML payloads. It treats the XML as a tree-like structure, allowing you to easily navigate to and access elements using a simple dot notation.</p>
-				
-                <h5>Example XML Payload:</h5>
-                <div class="code-block">
-<pre>
-&lt;Products&gt;
-  &lt;Product id=&quot;1001&quot;&gt;
-    &lt;Name&gt;Laptop&lt;/Name&gt;
-    &lt;Price&gt;1200.50&lt;/Price&gt;
-  &lt;/Product&gt;
-  &lt;Product id=&quot;1002&quot;&gt;
-    &lt;Name&gt;Mouse&lt;/Name&gt;
-    &lt;Price&gt;25.00&lt;/Price&gt;
-  &lt;/Product&gt;
-&lt;/Products&gt;
-</pre>
-                </div>
-                <h5>Example Groovy Script ('XmlSlurper'):</h5>
+                <h3>Accessing and Manipulating Data in Groovy</h3>
+                <p>You can use the <strong>Message</strong> object to access both headers and properties. The methods are very straightforward: 'getHeader()', 'getProperties()', 'setHeader()', and 'setProperty()'.</p>
+
+                <h4>Example Groovy Script:</h4>
                 <div class="code-block">
 <pre>
 import com.sap.gateway.ip.core.customdev.util.Message
-import groovy.xml.*
 
 def Message processData(Message message) {
-    def xmlPayload = message.getBody(String.class)
 
-    // Use XmlSlurper
-    def slurper = new XmlSlurper(false, false) //XmlSlurper(boolean validating, boolean namespaceAware)
-    def products = slurper.parseText(xmlPayload)
-
-    // Find the price of the product with ID "1001" and set it as a header
-    def laptop = products.Product.find { it.@id == '1001' }
-    if (laptop) {
-        def laptopPrice = laptop.Price.text()
-        message.setHeader('LaptopPrice', laptopPrice)
-    }
-
-    // Modify the second product's name
-    if (products.Product.size() > 1) {
-        products.Product[1].Name.replaceBody('Wireless Mouse')
-    }
-
-    // Serialize back to XML string
-    def updatedXml = XmlUtil.serialize(products)
-    message.setBody(updatedXml)
-
-    return message
-}
-
-</pre>
-                </div>
-
-                <h4>Working with JSON using Groovy's 'JsonSlurper'</h4>
-                <p>The <strong>'JsonSlurper'</strong> class provides a similar, intuitive approach for parsing JSON payloads. It converts the JSON string into a native Groovy object (like a Map or a List), which you can then navigate using dot notation or array indexing.</p>
-
-                <h5>Example JSON Payload:</h5>
-                <div class="code-block">
-<pre>
-{
-  &quot;user&quot;: {
-    &quot;id&quot;: &quot;u1234&quot;,
-    &quot;name&quot;: &quot;John Doe&quot;,
-    &quot;contact&quot;: {
-      &quot;email&quot;: &quot;john.doe@example.com&quot;,
-      &quot;phone&quot;: &quot;555-1234&quot;
-    },
-    &quot;roles&quot;: [&quot;admin&quot;, &quot;developer&quot;]
-  }
-}
-</pre>
-                </div>
-                <h5>Example Groovy Script ('JsonSlurper'):</h5>
-                <div class="code-block">
-<pre>
-import com.sap.gateway.ip.core.customdev.util.Message
-import groovy.json.JsonSlurper
-
-def Message processData(Message message) {
-    def jsonPayload = message.getBody(String.class)
-    def jsonSlurper = new JsonSlurper()
-    def parsedJson = jsonSlurper.parseText(jsonPayload)
-
-    // Access the user's email and set it as a header
-    def userEmail = parsedJson.user.contact.email
-    message.setHeader('UserEmail', userEmail)
+    // --- Working with Headers ---
+    // Get a header value
+    def contentType = message.getHeader('Content-Type')
     
-    // Access the second role in the 'roles' array
-    def secondRole = parsedJson.user.roles[1]
-    message.setHeader('SecondRole', secondRole)
+    // Set a new header
+    message.setHeader('sap-cpi-user', 'ashutosh-v')
+
+    // Remove a header
+    message.removeHeader('Content-Length')
+
+    // --- Working with Properties ---
+    // Get a property value
+    def vendorId = message.getProperty('Vendor_ID')
+    
+    // Set a new property
+    message.setProperty('ProcessedBy', 'GroovyScript')
+    message.setProperty('Timestamp', new Date())
+    
+    // Get all properties as a map
+    def allProperties = message.getProperties()
 
     return message
 }
 </pre>
                 </div>
-
+                <p>By effectively using headers and properties, you can create modular and robust integration flows, avoiding complex logic in a single script and instead passing data seamlessly between different steps.</p>
             </div>
         </section>
     </main>

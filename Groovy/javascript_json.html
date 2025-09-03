@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Working with XML and JSON Payloads - Ashutosh Vishwakarma</title>
+    <title>JSON Processing with JavaScript - Ashutosh Vishwakarma</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../styles.css">
     <style>
@@ -93,7 +93,7 @@
 
     <nav class="navbar">
         <div class="container navbar-container">
-            <a href="../index.html" class="navbar-logo">Ashutosh Vishwakarma</a>
+            <a href="index.html" class="navbar-logo">Ashutosh Vishwakarma</a>
         </div>
         <div class="dropdown-menu" id="dropdown-menu">
             <a href="index.html#about">About</a>
@@ -108,108 +108,60 @@
         <section class="section">
             <a href="../groovy_javascript.html" class="back-link">&larr; Back to Groovy & JavaScript</a>
             <h2 class="section-heading" data-animate>
-                <i class="fas fa-file-code"></i> Working with XML and JSON Payloads
+                <i class="fas fa-code"></i> JSON Processing with JavaScript
             </h2>
             <div class="article-content" data-animate>
-                <h3>Introduction to Scripting for Payloads</h3>
-                <p>In SAP CPI, not all data transformations can be handled by the standard Message Mapping or XML Converter. For complex logic, dynamic routing, or when dealing with payloads that have complex structures, Groovy and JavaScript are essential. The Groovy language, in particular, offers powerful, built-in libraries for handling both XML and JSON data with ease.</p>
+                <p>For some integration scenarios, especially those involving Web APIs, JavaScript might be a more familiar choice than Groovy. SAP CPI supports a JavaScript engine, which you can use to process JSON payloads. The built-in <strong>'JSON'</strong> object makes it incredibly easy to convert between JSON strings and JavaScript objects.</p>
+                
+                <h3>Key JavaScript Methods:</h3>
+                <ul>
+                    <li><strong>JSON.parse()</strong>: Converts a JSON string into a JavaScript object. This is the first step for reading and manipulating data from an incoming JSON payload.</li>
+                    <li><strong>JSON.stringify()</strong>: Converts a JavaScript object back into a JSON string. This is used to prepare the data for a subsequent step in the integration flow.</li>
+                </ul>
 
-                <h4>Working with XML using Groovy's 'XmlSlurper'</h4>
-                <p>The <strong>'XmlSlurper'</strong> class is a simple and fast way to parse XML payloads. It treats the XML as a tree-like structure, allowing you to easily navigate to and access elements using a simple dot notation.</p>
-				
-                <h5>Example XML Payload:</h5>
-                <div class="code-block">
-<pre>
-&lt;Products&gt;
-  &lt;Product id=&quot;1001&quot;&gt;
-    &lt;Name&gt;Laptop&lt;/Name&gt;
-    &lt;Price&gt;1200.50&lt;/Price&gt;
-  &lt;/Product&gt;
-  &lt;Product id=&quot;1002&quot;&gt;
-    &lt;Name&gt;Mouse&lt;/Name&gt;
-    &lt;Price&gt;25.00&lt;/Price&gt;
-  &lt;/Product&gt;
-&lt;/Products&gt;
-</pre>
-                </div>
-                <h5>Example Groovy Script ('XmlSlurper'):</h5>
-                <div class="code-block">
-<pre>
-import com.sap.gateway.ip.core.customdev.util.Message
-import groovy.xml.*
-
-def Message processData(Message message) {
-    def xmlPayload = message.getBody(String.class)
-
-    // Use XmlSlurper
-    def slurper = new XmlSlurper(false, false) //XmlSlurper(boolean validating, boolean namespaceAware)
-    def products = slurper.parseText(xmlPayload)
-
-    // Find the price of the product with ID "1001" and set it as a header
-    def laptop = products.Product.find { it.@id == '1001' }
-    if (laptop) {
-        def laptopPrice = laptop.Price.text()
-        message.setHeader('LaptopPrice', laptopPrice)
-    }
-
-    // Modify the second product's name
-    if (products.Product.size() > 1) {
-        products.Product[1].Name.replaceBody('Wireless Mouse')
-    }
-
-    // Serialize back to XML string
-    def updatedXml = XmlUtil.serialize(products)
-    message.setBody(updatedXml)
-
-    return message
-}
-
-</pre>
-                </div>
-
-                <h4>Working with JSON using Groovy's 'JsonSlurper'</h4>
-                <p>The <strong>'JsonSlurper'</strong> class provides a similar, intuitive approach for parsing JSON payloads. It converts the JSON string into a native Groovy object (like a Map or a List), which you can then navigate using dot notation or array indexing.</p>
-
-                <h5>Example JSON Payload:</h5>
+                <h4>Example JSON Payload:</h4>
                 <div class="code-block">
 <pre>
 {
-  &quot;user&quot;: {
-    &quot;id&quot;: &quot;u1234&quot;,
-    &quot;name&quot;: &quot;John Doe&quot;,
-    &quot;contact&quot;: {
-      &quot;email&quot;: &quot;john.doe@example.com&quot;,
-      &quot;phone&quot;: &quot;555-1234&quot;
-    },
-    &quot;roles&quot;: [&quot;admin&quot;, &quot;developer&quot;]
-  }
+  &quot;orderId&quot;: &quot;ORD12345&quot;,
+  &quot;customer&quot;: {
+    &quot;name&quot;: &quot;Jane Doe&quot;,
+    &quot;address&quot;: {
+      &quot;city&quot;: &quot;London&quot;,
+      &quot;country&quot;: &quot;GB&quot;
+    }
+  },
+  &quot;status&quot;: &quot;New&quot;
 }
 </pre>
                 </div>
-                <h5>Example Groovy Script ('JsonSlurper'):</h5>
+                
+                <h4>Example JavaScript ('.js') Script:</h4>
                 <div class="code-block">
 <pre>
-import com.sap.gateway.ip.core.customdev.util.Message
-import groovy.json.JsonSlurper
+importClass(com.sap.gateway.ip.core.customdev.util.Message);
 
-def Message processData(Message message) {
-    def jsonPayload = message.getBody(String.class)
-    def jsonSlurper = new JsonSlurper()
-    def parsedJson = jsonSlurper.parseText(jsonPayload)
+function processData(message) {
+    //Body
+    var body = message.getBody(java.lang.String);
+    var jsonObject = JSON.parse(body);
 
-    // Access the user's email and set it as a header
-    def userEmail = parsedJson.user.contact.email
-    message.setHeader('UserEmail', userEmail)
+	// Access and modify a value
+	jsonObject.status = "In Progress";
+	jsonObject.customer.address.city = "Greater London";
+	
+	// Set a message header from the data
+	message.setHeader("OrderId", jsonObject.orderId);
+	
+	// Stringify the object back to a JSON string and set the message body
+	var newBody = JSON.stringify(jsonObject);
+	message.setBody(newBody);
     
-    // Access the second role in the 'roles' array
-    def secondRole = parsedJson.user.roles[1]
-    message.setHeader('SecondRole', secondRole)
-
-    return message
+    return message;
 }
 </pre>
                 </div>
-
+                <p>Using these two methods, you can seamlessly read and write JSON data within your JavaScript steps, enabling powerful transformations and data enrichments.</p>
             </div>
         </section>
     </main>

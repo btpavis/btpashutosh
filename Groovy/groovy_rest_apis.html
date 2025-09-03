@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calling External REST APIs from Groovy - Ashutosh Vishwakarma</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        /* Article-specific styles for better readability */
+        .article-content {
+            background-color: var(--card-bg-color);
+            border-radius: 1rem;
+            padding: 3rem;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+        .article-content h1, .article-content h2, .article-content h3 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        .article-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-color-dark);
+            margin-bottom: 1.5rem;
+        }
+        .article-content ul {
+            padding-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .article-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-color-dark);
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--secondary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            overflow-x: auto;
+            border-radius: 0.5rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover {
+            color: var(--secondary-color);
+        }
+        .section {
+            padding: 5rem 0;
+            scroll-margin-top: 100px;
+        }
+        .section-heading {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--primary-color);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.9rem;
+        }
+        .section-heading i {
+            color: var(--secondary-color);
+        }
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -15px;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 4px;
+            background-color: var(--secondary-color);
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="../index.html" class="navbar-logo">Ashutosh Vishwakarma</a>
+        </div>
+        <div class="dropdown-menu" id="dropdown-menu">
+            <a href="index.html#about">About</a>
+            <a href="index.html#skills">Skills</a>
+            <a href="learning.html">Learning & Insights</a>
+            <a href="index.html#certs">Certifications</a>
+            <a href="index.html#contact">Contact</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="section">
+            <a href="../groovy_javascript.html" class="back-link">&larr; Back to Groovy & JavaScript</a>
+            <h2 class="section-heading" data-animate>
+                <i class="fas fa-code"></i> Calling External REST APIs from Groovy
+            </h2>
+            <div class="article-content" data-animate>
+                <p>In SAP CPI, sometimes you need to enrich your message with data from an external system. Calling a REST API from a Groovy script is a powerful way to do this. You can make HTTP GET, POST, PUT, and DELETE requests to interact with third-party services.</p>
+                
+                <h3>Making a GET Request</h3>
+                <p>The 'HttpUrlConnection' class is a reliable way to make HTTP requests. You can pass parameters, set headers, and retrieve the response. A common use case is fetching customer details from a CRM system.</p>
+
+                <h4>Example Groovy Script for GET call with Baisc Authentication:</h4>
+                <div class="code-block">
+<pre>
+import com.sap.gateway.ip.core.customdev.util.Message
+import java.util.HashMap
+import java.net.URL
+import java.net.HttpURLConnection
+import java.util.Base64
+
+def Message processData(Message message) {
+    
+    // API endpoint
+    def apiUrl = "https://api.example.com/v1/data"
+
+    // Username and Password for Basic Auth
+    def username = "yourUsername"
+    def password = "yourPassword"
+
+    // Encode credentials to Base64
+    String auth = username + ":" + password
+    byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes("UTF-8"))
+    String authHeader = "Basic " + new String(encodedAuth)
+
+    // Open connection
+    URL url = new URL(apiUrl)
+    HttpURLConnection connection = (HttpURLConnection) url.openConnection()
+    connection.setRequestMethod("GET")
+    connection.setRequestProperty("Authorization", authHeader)
+    connection.setRequestProperty("Accept", "application/json")
+    connection.setConnectTimeout(10000)  // 10 sec timeout
+    connection.setReadTimeout(10000)
+
+    int responseCode = connection.getResponseCode()
+    String responseBody
+
+    if (responseCode == HttpURLConnection.HTTP_OK) {
+        responseBody = connection.getInputStream().getText("UTF-8")
+    } else {
+        responseBody = connection.getErrorStream()?.getText("UTF-8")
+    }
+
+    // Set response as body of message
+    message.setBody(responseBody)
+
+    // Optionally store response code in header
+    message.setHeader("HTTP_RESPONSE_CODE", responseCode.toString())
+
+    return message
+}
+
+</pre>
+                </div>
+                
+                <h3>Making POST, PUT, PATCH, DELETE Request with a Payload</h3>
+                <p>A generic Groovy template in SAP CPI where you can call any external API with Basic Authentication, and you can switch between GET, POST, PUT, PATCH, DELETE just by changing the method.</p>
+
+                <h4>Example Groovy Script template with Basic Authentication:</h4>
+                <div class="code-block">
+<pre>
+import com.sap.gateway.ip.core.customdev.util.Message
+import java.util.HashMap
+import java.net.URL
+import java.net.HttpURLConnection
+import java.util.Base64
+
+def Message processData(Message message) {
+
+    // === Configuration ===
+    def apiUrl = "https://api.example.com/v1/resource"  // API endpoint
+    def username = "yourUsername"
+    def password = "yourPassword"
+    def httpMethod = "POST"  // Change to GET, PUT, PATCH, DELETE as needed
+
+    // Body for POST, PUT, PATCH (CPI message body can be used too)
+    def requestBody = message.getBody(java.lang.String)  
+    // If empty and you want to hardcode:
+    // def requestBody = '{"id":123, "name":"test"}'
+
+    // === Basic Auth Header ===
+    String auth = username + ":" + password
+    byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes("UTF-8"))
+    String authHeader = "Basic " + new String(encodedAuth)
+
+    // === Connection Setup ===
+    URL url = new URL(apiUrl)
+    HttpURLConnection connection = (HttpURLConnection) url.openConnection()
+    connection.setRequestMethod(httpMethod)
+    connection.setRequestProperty("Authorization", authHeader)
+    connection.setRequestProperty("Content-Type", "application/json")
+    connection.setRequestProperty("Accept", "application/json")
+    connection.setConnectTimeout(15000)
+    connection.setReadTimeout(15000)
+
+    // === Handle Request Body for POST, PUT, PATCH ===
+    if (httpMethod in ["POST", "PUT", "PATCH"]) {
+        connection.setDoOutput(true)
+        connection.getOutputStream().withWriter("UTF-8") { writer ->
+            writer.write(requestBody ?: "")
+        }
+    }
+
+    // === Get Response ===
+    int responseCode = connection.getResponseCode()
+    String responseBody
+
+    if (responseCode >= 200 && responseCode < 300) {
+        responseBody = connection.getInputStream().getText("UTF-8")
+    } else {
+        responseBody = connection.getErrorStream()?.getText("UTF-8")
+    }
+
+    // === Set Output ===
+    message.setBody(responseBody)
+    message.setHeader("HTTP_RESPONSE_CODE", responseCode.toString())
+    message.setHeader("HTTP_METHOD_USED", httpMethod)
+
+    return message
+}
+</pre>
+                </div>
+				
+				<h3>Using other Authentication Methods</h3>
+                <p>In CPI Groovy, you can also call APIs using other common authentication methods.I’ll give you ready-to-use Groovy code snippets for each type.</p>
+
+                <h4>Code snippet for Bearer Token (OAuth2 / JWT):</h4>
+                <div class="code-block">
+<pre>
+// Normally token is retrieved beforehand via OAuth2 flow
+String token = "your-access-token-here"
+
+connection.setRequestProperty("Authorization", "Bearer " + token)
+</pre>
+                </div>
+				
+				<h4>Code snippet for API Key in Header:</h4>
+                <div class="code-block">
+<pre>
+String apiKey = "your-api-key"
+connection.setRequestProperty("x-api-key", apiKey)
+</pre>
+                </div>
+				
+				<h4>Code snippet for API Key in Query Parameter:</h4>
+                <div class="code-block">
+<pre>
+String apiKey = "your-api-key"
+URL url = new URL("https://api.example.com/v1/data?apikey=" + apiKey)
+HttpURLConnection connection = (HttpURLConnection) url.openConnection()
+</pre>
+                </div>
+				
+				<h4>Code snippet for OAuth2 Client Credentials (Dynamic Token Fetch):</h4>
+				<p>You need to first fetch a token, then call the API.</p>
+                <div class="code-block">
+<pre>
+import java.net.*
+import java.io.*
+
+// Step 1: Get OAuth2 Token
+def tokenUrl = "https://auth.example.com/oauth2/token"
+def clientId = "yourClientId"
+def clientSecret = "yourClientSecret"
+
+String auth = clientId + ":" + clientSecret
+String authHeader = "Basic " + Base64.encoder.encodeToString(auth.getBytes("UTF-8"))
+
+URL url = new URL(tokenUrl)
+HttpURLConnection conn = (HttpURLConnection) url.openConnection()
+conn.setRequestMethod("POST")
+conn.setRequestProperty("Authorization", authHeader)
+conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+conn.setDoOutput(true)
+
+def body = "grant_type=client_credentials"
+conn.getOutputStream().withWriter("UTF-8") { writer -> writer.write(body) }
+
+def response = conn.getInputStream().getText("UTF-8")
+def accessToken = new groovy.json.JsonSlurper().parseText(response).access_token
+
+// Step 2: Call API with Bearer Token
+URL apiUrl = new URL("https://api.example.com/v1/resource")
+HttpURLConnection apiConn = (HttpURLConnection) apiUrl.openConnection()
+apiConn.setRequestMethod("GET")
+apiConn.setRequestProperty("Authorization", "Bearer " + accessToken)
+</pre>
+                </div>
+				
+				<h4>Code snippet for Custom Header Authentication:</h4>
+                <div class="code-block">
+<pre>
+connection.setRequestProperty("Auth-Token", "custom-token-value")
+connection.setRequestProperty("Client-Id", "your-client-id")
+</pre>
+                </div>
+				<h3>Limitaion:</h3>
+				<p><strong>Mutual TLS (Certificate Based Auth)</strong> can not be handled directly in Groovy. CPI manages it via Keystore and HTTP adapter with client certificates.From Groovy you cannot directly attach certificates.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2024 Ashutosh Vishwakarma. Built with modern web standards.</p>
+    </footer>
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            dropdownMenu.classList.toggle('active');
+        });
+
+        dropdownMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                dropdownMenu.classList.remove('active');
+            });
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.setAttribute('data-animate', 'true');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('[data-animate]').forEach(element => {
+            observer.observe(element);
+        });
+    </script>
+</body>
+</html>
