@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groovy Fixed-Length to XML Converter - SAP CPI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        /* Article-specific styles */
+        .article-content {
+            background-color: var(--card-bg-color);
+            border-radius: 1rem;
+            padding: 3rem;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+        .article-content h1, .article-content h2, .article-content h3 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        .article-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-color-dark);
+            margin-bottom: 1.5rem;
+        }
+        .article-content ul {
+            padding-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .article-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-color-dark);
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--secondary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            overflow-x: auto;
+            border-radius: 0.5rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover {
+            color: var(--secondary-color);
+        }
+        .section {
+            padding: 5rem 0;
+            scroll-margin-top: 100px;
+        }
+        .section-heading {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--primary-color);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.9rem;
+        }
+        .section-heading i {
+            color: var(--secondary-color);
+        }
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -15px;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 4px;
+            background-color: var(--secondary-color);
+            border-radius: 2px;
+        }
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            font-size: 0.9rem;
+            color: var(--text-color-light);
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="../index.html" class="navbar-logo">Ashutosh Vishwakarma</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="section" id="learning-content">
+            <a href="../learning.html" class="back-link">&larr; Back to Learning & Insights</a>
+            <h2 class="section-heading" data-animate>
+                <i class="fas fa-file-invoice"></i> Groovy for Fixed-Length to XML Conversion
+            </h2>
+
+            <div class="article-content" data-animate>
+                <div id="topics-container">
+                    <p>
+                        In many integration scenarios, you encounter legacy systems that exchange data in a fixed-length text format. This is a flat file where each field has a predefined, non-variable length. Converting this to a modern, structured format like XML is a common requirement. While you could use a Message Mapping, a dynamic Groovy script offers a more flexible solution, especially when the file structure is defined by external properties in SAP CPI.
+                    </p>
+                    <h3>The Fixed-Length Challenge</h3>
+                    <p>
+                        The core challenge with fixed-length files is splitting the raw string into meaningful fields based on their start and end positions. A Groovy script can automate this by reading the field lengths and corresponding XML tags from properties, making the solution highly reusable and maintainable.
+                    </p>
+                    <h3>Setting up the CPI Properties</h3>
+                    <p>
+                        First, you need to define the structure of the fixed-length file and the desired XML output as process properties in your Integration Flow. This allows you to change the structure without modifying the Groovy script.
+                    </p>
+                    <ul>
+                        <li>Property <strong>'FieldFixedLengths':</strong> A comma-separated list of field lengths. For example: '2,8,15,5'.</li>
+                        <li>Property <strong>'xmlSegments':</strong> A comma-separated list of the XML tags for each corresponding field. For example: 'ID,Date,ProductName,Quantity'.</li>
+                    </ul>
+					
+				<h4>Fixed Length File:</h4>
+                <p>This is a sample file</p>
+                <div class="code-block">
+<pre>
+00001John Smith     29MNew York      
+00002Alice Johnson  34FLos Angeles   
+00003Robert Brown   41MChicago       
+</pre>
+                </div>
+				
+                    <h3>The Groovy Script</h3>
+                    <p>
+                        The script below reads the incoming fixed-length message body, uses the properties to parse it, and then generates an XML payload.
+                    </p>
+					<ul>
+                        <li>Property <strong>FieldFixedLengths:</strong> 5,15,2,1,12.</li>
+                        <li>Property <strong>xmlSegments:</strong> ID,Name,Age,Gender,City.</li>
+                    </ul>
+                    <div class="code-block">
+<pre>
+import com.sap.gateway.ip.core.customdev.util.Message;
+
+def Message processData(Message message) 
+{
+    def body = message.getBody(java.lang.String) as String;
+
+    def body1 = "&lt;root&gt;\n";  // start root tag
+
+    def prop = message.getProperties();
+	
+    // Get the fixed-length and XML definitions from properties
+    def Segments = prop.get("xmlSegments").split(",") as String[]
+    def FieldFixedLengths = prop.get("FieldFixedLengths").split(",") as String[]
+    
+    def propertyValue = message.getProperty("FieldFixedLengths")
+    def sum1 = propertyValue.tokenize(',').collect { it as int }.sum()
+    
+    def bodyLength = body.length()
+    if (bodyLength &lt; sum1) {
+        int paddingLength = sum1 - bodyLength
+        body = body + ' ' * paddingLength
+    }
+    
+    def lines = body.split("\n");
+	
+    // build xml
+    for (i = 0; i &lt; lines.length; i++) 
+    {
+        def sum = 0
+        body1 += "  &lt;row&gt;\n";
+
+        for (k = 0; k &lt; FieldFixedLengths.length; k++) 
+        {
+            def l2 = Integer.valueOf(FieldFixedLengths[k]);
+            def value = lines[i].substring(sum, sum + l2).trim()
+            body1 += "    &lt;" + Segments[k] + "&gt;" + value + "&lt;/" + Segments[k] + "&gt;\n"
+            sum += l2;
+        }
+
+        body1 += "  &lt;/row&gt;\n";
+    }
+
+    body1 += "&lt;/root&gt;";  // close root tag
+
+    message.setBody(body1);
+    return message;
+}
+</pre>
+                </div>
+                    <h4>How the Script Works:</h4>
+                    <ol>
+                        <li><strong>Get Properties</strong>: It retrieves the 'FixedLengths' and 'XmlSegments' properties from the Integration Flow, splitting them into Groovy lists. The 'FixedLengths' are converted to integers.</li>
+                        <li><strong>Parse Fixed-Length String</strong>: The script iterates through the 'fixedLengths' list. In each loop, it uses 'substring()' with a 'startIndex' and 'length' to extract a field from the message body. The '.trim()' method removes any trailing spaces.</li>
+                        <li><strong>Build XML</strong>: Loops through each record:
+						<ul>
+							<li>Keeps a running index (sum) to know where each field starts.</li>
+							<li>Reads exactly FieldFixedLengths[k] characters</li>
+							<li>Wraps the extracted substring inside an XML tag &lt;SegmentName&gt;value&lt;/SegmentName&gt;</li>
+							<li>Moves pointer to the next field</li>
+						</ul>
+						</li>
+                        <li><strong>Set Body</strong>: The final XML string is set back as the message body.</li>
+                    </ol>
+					
+					<h4>Output XML File:</h4>
+					<p>Flat file is converted into XML.</p>
+					<div class="code-block">
+<pre>
+&lt;root&gt;
+	&lt;row&gt;
+		&lt;ID&gt;00001&lt;/ID&gt;
+		&lt;Name&gt;John Smith&lt;/Name&gt;
+		&lt;Age&gt;29&lt;/Age&gt;
+		&lt;Gender&gt;M&lt;/Gender&gt;
+		&lt;City&gt;New York&lt;/City&gt;
+	&lt;/row&gt;
+	&lt;row&gt;
+		&lt;ID&gt;00002&lt;/ID&gt;
+		&lt;Name&gt;Alice Johnson&lt;/Name&gt;
+		&lt;Age&gt;34&lt;/Age&gt;
+		&lt;Gender&gt;F&lt;/Gender&gt;
+		&lt;City&gt;Los Angeles&lt;/City&gt;
+	&lt;/row&gt;
+	&lt;row&gt;
+		&lt;ID&gt;00003&lt;/ID&gt;
+		&lt;Name&gt;Robert Brown&lt;/Name&gt;
+		&lt;Age&gt;41&lt;/Age&gt;
+		&lt;Gender&gt;M&lt;/Gender&gt;
+		&lt;City&gt;Chicago&lt;/City&gt;
+	&lt;/row&gt;
+&lt;/root&gt;  
+</pre>
+					</div>
+					
+                    <h3>Conclusion</h3>
+                    <p>
+                        This Groovy script provides a flexible and dynamic solution for fixed-length file conversion in SAP CPI. By externalizing the file structure definition, you can easily adapt your integration flow to new fixed-length formats without changing the script, making your solution highly scalable and easy to maintain.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="footer">
+        <p>© 2024 Ashutosh Vishwakarma. Built with modern web standards.</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const dropdownMenu = document.getElementById('dropdown-menu');
+
+            if (mobileMenuBtn && dropdownMenu) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    dropdownMenu.classList.toggle('active');
+                });
+            }
+
+            if (dropdownMenu) {
+                dropdownMenu.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        dropdownMenu.classList.remove('active');
+                    });
+                });
+            }
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.setAttribute('data-animate', 'true');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('[data-animate]').forEach(element => {
+                observer.observe(element);
+            });
+        });
+    </script>
+</body>
+</html>

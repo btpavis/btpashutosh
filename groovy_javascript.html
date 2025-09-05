@@ -125,6 +125,32 @@
         .card:hover {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 2rem;
+            gap: 1rem;
+        }
+        .pagination button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .pagination button:hover:not(:disabled) {
+            background-color: var(--secondary-color);
+        }
+        .pagination button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .pagination span {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -158,31 +184,41 @@
                         <h3><a href="Groovy/hashmap_details.html">Application of HashMap in Groovy Scripts</a></h3>
                         <p>Learn how to use HashMaps as a powerful tool for efficient data lookups and transformations in your SAP CPI Groovy scripts.</p>
                     </div>
-                    
+                     
                     <div class="card article-topic">
                         <h3><a href="Groovy/xml_json_payloads.html">Working with XML and JSON Payloads</a></h3>
                         <p>A guide to parsing and manipulating XML and JSON data using Groovy's XMLSlurper and JsonSlurper.</p>
                     </div>
-                    
+                     
                     <div class="card article-topic">
                         <h3><a href="Groovy/headers_properties.html">Using Message Headers and Properties</a></h3>
                         <p>A deep dive into accessing, setting, and using headers and properties to pass data between steps in your integration flow.</p>
                     </div>
-                    
+                     
                     <div class="card article-topic">
                         <h3><a href="Groovy/groovy_rest_apis.html">Calling External REST APIs from Groovy</a></h3>
                         <p>Call an REST API inside groovy script.</p>
                     </div>
-                    
+                     
                     <div class="card article-topic">
                         <h3><a href="Groovy/javascript_json.html">JSON Processing with JavaScript</a></h3>
                         <p>A guide to parsing, creating, and manipulating JSON messages using the built-in JSON methods in SAP CPI JavaScript.</p>
                     </div>
-					
-					<div class="card article-topic">
+                    
+                    <div class="card article-topic">
                         <h3><a href="Groovy/value_mapping_groovy.html">Reading Value Mapping in Groovy</a></h3>
                         <p>Learn how to use Value Mapping for efficient data lookups and transformations in your SAP CPI Groovy scripts.</p>
                     </div>
+                    
+                    <div class="card article-topic">
+                        <h3><a href="Groovy/fixed_length_to_xml.html">Groovy for Fixed-Length to XML Conversion</a></h3>
+                        <p>Lets see how to convert fixed length file into xml using groovy script.</p>
+                    </div>
+                </div>
+                <div class="pagination">
+                    <button id="prevPage">Previous</button>
+                    <span id="pageInfo">Page 1 of 2</span>
+                    <button id="nextPage">Next</button>
                 </div>
             </div>
         </section>
@@ -224,27 +260,65 @@
                 observer.observe(element);
             });
 
-            // Search Functionality for topic cards
-            const searchInput = document.getElementById('searchInput');
+            // Pagination and Search Logic
             const topicsContainer = document.getElementById('topics-container');
-            const topicCards = topicsContainer.getElementsByClassName('article-topic');
+            const allTopics = Array.from(topicsContainer.getElementsByClassName('article-topic'));
+            const searchInput = document.getElementById('searchInput');
+            const prevButton = document.getElementById('prevPage');
+            const nextButton = document.getElementById('nextPage');
+            const pageInfo = document.getElementById('pageInfo');
 
-            if (searchInput) {
-                searchInput.addEventListener('keyup', () => {
-                    const searchQuery = searchInput.value.toLowerCase();
-                    
-                    for (let i = 0; i < topicCards.length; i++) {
-                        const topic = topicCards[i];
-                        const topicText = topic.textContent || topic.innerText;
-                        
-                        if (topicText.toLowerCase().includes(searchQuery)) {
-                            topic.style.display = 'block'; 
-                        } else {
-                            topic.style.display = 'none';
-                        }
-                    }
-                });
-            }
+            const recordsPerPage = 5;
+            let currentPage = 1;
+            let filteredTopics = [...allTopics]; // A copy for filtering
+
+            const renderTopics = (topics, page) => {
+                const start = (page - 1) * recordsPerPage;
+                const end = start + recordsPerPage;
+                allTopics.forEach(topic => topic.style.display = 'none'); // Hide all first
+                topics.slice(start, end).forEach(topic => topic.style.display = 'block');
+            };
+
+            const updatePaginationControls = (totalRecords) => {
+                const totalPages = Math.ceil(totalRecords / recordsPerPage);
+                pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+                prevButton.disabled = currentPage === 1;
+                nextButton.disabled = currentPage === totalPages || totalRecords <= recordsPerPage;
+            };
+
+            const filterAndRender = () => {
+                const query = searchInput.value.toLowerCase();
+                filteredTopics = allTopics.filter(topic =>
+                    topic.textContent.toLowerCase().includes(query)
+                );
+                currentPage = 1;
+                renderTopics(filteredTopics, currentPage);
+                updatePaginationControls(filteredTopics.length);
+            };
+
+            // Initial render
+            renderTopics(filteredTopics, currentPage);
+            updatePaginationControls(filteredTopics.length);
+
+            // Event Listeners
+            searchInput.addEventListener('keyup', filterAndRender);
+
+            prevButton.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderTopics(filteredTopics, currentPage);
+                    updatePaginationControls(filteredTopics.length);
+                }
+            });
+
+            nextButton.addEventListener('click', () => {
+                const totalPages = Math.ceil(filteredTopics.length / recordsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderTopics(filteredTopics, currentPage);
+                    updatePaginationControls(filteredTopics.length);
+                }
+            });
         });
     </script>
 </body>
